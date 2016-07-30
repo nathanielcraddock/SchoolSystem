@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="SchoolSystemModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Car">
+    <Key>
+      <PropertyRef Name="CarId" />
+    </Key>
+    <Property Name="CarId" Type="Int32" Nullable="false" />
+    <Property Name="Make" Type="String" MaxLength="20" FixedLength="true" Unicode="true" Nullable="false" />
+    <Property Name="Model" Type="String" MaxLength="20" FixedLength="true" Unicode="true" Nullable="false" />
+    <Property Name="Year" Type="String" MaxLength="4" FixedLength="true" Unicode="true" Nullable="false" />
+    <Property Name="LicensePlate" Type="String" MaxLength="15" FixedLength="true" Unicode="true" Nullable="false" />
+    <Property Name="Color" Type="String" MaxLength="15" FixedLength="true" Unicode="true" Nullable="false" />
+    <NavigationProperty Name="LineTables" Relationship="Self.FK_LineTable_CarId" FromRole="Cars" ToRole="LineTable" />
+  </EntityType>
+  <EntityType Name="LineTable">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" />
+    <Property Name="CarId" Type="Int32" Nullable="false" />
+    <Property Name="StudentId" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Car" Relationship="Self.FK_LineTable_CarId" FromRole="LineTable" ToRole="Cars" />
+    <NavigationProperty Name="Student" Relationship="Self.FK_LineTable_StudentId" FromRole="LineTable" ToRole="Students" />
+  </EntityType>
+  <EntityType Name="Student">
+    <Key>
+      <PropertyRef Name="StudentId" />
+    </Key>
+    <Property Name="StudentId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="FName" Type="String" MaxLength="30" FixedLength="true" Unicode="true" Nullable="false" />
+    <Property Name="LName" Type="String" MaxLength="50" FixedLength="true" Unicode="true" Nullable="false" />
+    <Property Name="Age" Type="String" MaxLength="2" FixedLength="true" Unicode="true" Nullable="false" />
+    <Property Name="Grade" Type="String" MaxLength="2" FixedLength="true" Unicode="true" Nullable="false" />
+    <NavigationProperty Name="LineTables" Relationship="Self.FK_LineTable_StudentId" FromRole="Students" ToRole="LineTable" />
+  </EntityType>
+  <Association Name="FK_LineTable_CarId">
+    <End Role="Cars" Type="Self.Car" Multiplicity="1" />
+    <End Role="LineTable" Type="Self.LineTable" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Cars">
+        <PropertyRef Name="CarId" />
+      </Principal>
+      <Dependent Role="LineTable">
+        <PropertyRef Name="CarId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_LineTable_StudentId">
+    <End Role="Students" Type="Self.Student" Multiplicity="1" />
+    <End Role="LineTable" Type="Self.LineTable" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Students">
+        <PropertyRef Name="StudentId" />
+      </Principal>
+      <Dependent Role="LineTable">
+        <PropertyRef Name="StudentId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="SchoolSystemEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Cars" EntityType="Self.Car" />
+    <EntitySet Name="LineTables" EntityType="Self.LineTable" />
+    <EntitySet Name="Students" EntityType="Self.Student" />
+    <AssociationSet Name="FK_LineTable_CarId" Association="Self.FK_LineTable_CarId">
+      <End Role="Cars" EntitySet="Cars" />
+      <End Role="LineTable" EntitySet="LineTables" />
+    </AssociationSet>
+    <AssociationSet Name="FK_LineTable_StudentId" Association="Self.FK_LineTable_StudentId">
+      <End Role="Students" EntitySet="Students" />
+      <End Role="LineTable" EntitySet="LineTables" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
